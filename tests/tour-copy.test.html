@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Tour copy checks</title>
+<body><h1 id="result">Checking tour copy…</h1><pre id="details"></pre>
+<script type="module">
+import { applyPageCopy, textOf } from '../tour/copy.js';
+const assert = (condition, message) => { if (!condition) throw new Error(message); };
+try {
+  const [pageHTML, tourHTML] = await Promise.all([
+    fetch('../index.html', { cache: 'no-store' }).then(r => r.text()),
+    fetch('../tour/index.html', { cache: 'no-store' }).then(r => r.text())
+  ]);
+  const parser = new DOMParser();
+  const page = parser.parseFromString(pageHTML, 'text/html');
+  const tour = parser.parseFromString(tourHTML, 'text/html');
+  const caption = key => tour.querySelector(`[data-copy="${key}"]`);
+  const title = key => textOf(caption(key).querySelector('[data-caption-title]'));
+  const note = key => caption(key).querySelector('[data-caption-note]');
+  applyPageCopy(page, tour);
+  assert(title('intro') === textOf(page.querySelector('#hero-heading')), 'Intro must use the current owner headline');
+  assert(caption('intro').querySelector('em')?.textContent === page.querySelector('#hero-heading em')?.textContent, 'Headline emphasis must be preserved');
+  assert(title('contact') === textOf(page.querySelector('#contact-heading')), 'Last caption must use the enquiry heading');
+  assert(tour.querySelectorAll('[data-contact-action]')[1].textContent === textOf(page.querySelector('.header .button')), 'Tour action must match the page action');
+  assert(!/Why struggle|Stop struggling|Flatmates you never|Krishna on the walls|Morning panic|2- and 3-sharing|Photos, videos/.test(tourHTML), 'Removed promotional copy must not exist in the tour template');
+  assert(!tour.querySelector('s'), 'The negative comparison captions must be gone');
+  assert(!caption('contact').querySelector('.price, .fine'), 'The final card must not restore the old rate pitch or photos-on-request copy');
+  const hall = page.querySelector('.amenity-grid use[href="#icon-home"]').closest('article');
+  hall.querySelector('h3').textContent = 'Owner updated hall title';
+  hall.querySelector('p').textContent = 'Owner updated hall description.';
+  applyPageCopy(page, tour);
+  assert(title('hall') === 'Owner updated hall title', 'A changed page heading must appear in the tour');
+  assert(note('hall').textContent === 'Owner updated hall description.', 'A changed page description must appear in the tour');
+  hall.querySelector('p').remove();
+  applyPageCopy(page, tour);
+  assert(note('hall').hidden && !note('hall').textContent, 'Deleted text must stay empty and hidden');
+  hall.remove();
+  applyPageCopy(page, tour);
+  assert(caption('hall').hidden, 'Deleting an amenity must remove its tour caption');
+  assert(!tour.querySelector('.cap:not([hidden])[data-copy="hall"]'), 'Removed captions must not appear in the chapter navigation');
+  page.querySelector('#hero-heading').remove();
+  applyPageCopy(page, tour);
+  assert(caption('intro').hidden && !title('intro'), 'Deleting the headline must not restore an old headline');
+  page.querySelector('.header .button').remove();
+  applyPageCopy(page, tour);
+  assert([...tour.querySelectorAll('[data-contact-action]')].every(link => link.hidden && !link.textContent), 'Deleting the page action must not leave an old tour action');
+  document.querySelector('#result').textContent = 'PASS';
+  document.querySelector('#details').textContent = 'Current copy, emphasis, contact action, removed legacy text, later edits and deletions all passed.';
+} catch (error) {
+  document.querySelector('#result').textContent = 'FAIL';
+  document.querySelector('#details').textContent = error.stack;
+}
+</script></body></html>

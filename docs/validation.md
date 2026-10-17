@@ -34,3 +34,23 @@ Building identity: https://www.lalanigroup.in/projects/dunhill-corner and Google
 ## Limits
 
 Responsive checks use desktop-browser viewports, not physical phones. Physical Android/iPhone performance, Safari-specific behaviour and poor-network recovery remain untested. Iframe state preservation depends on browser support. The original city's model placement is illustrative and is not treated as evidence for real-world distances. Original parent Blender/tour files are unchanged. No hosting deployment was performed during validation.
+
+
+## Readability pass
+
+- Increased body copy to 18 px on desktop and 16 px on mobile. Most secondary text is 14 px or larger; route information and actions are 16 px. Display headings and the supplied copy are preserved.
+- Increased button, form and integrated-tour caption sizes and darkened muted text. Small-phone enquiry choices use one column; calculator labels/inputs align within each row.
+- Inspected the location section at 1280 px and 390 px. Document width matches viewport width at 320 px and 390 px; the enquiry cards use a single column on narrow phones.
+- The owner removed the message-preview element. Its optional DOM reference now tolerates that removal, so initialisation continues. Verified programme selection updates the WhatsApp destination and the calculator still shows ₹3,000/month and ₹36,000/year for the earlier test inputs, with no console errors.
+- Typography checks were completed before publication.
+
+
+## Tour copy follows the owner’s edited page
+
+- Removed the old complaint/strikethrough captions, community/kirtan slogans, rate block and photos-on-request pitch from the tour template.
+- Scene text now comes from the matching current page elements: hero, tour welcome, hall, Ancient AI, Wi-Fi, AC, storage, meals, fridge/microwave and laundry. Railway and metro labels read the current route cards. Headline emphasis is retained.
+- Missing source headings/descriptions are cleared and hidden. No old marketing text exists as a fallback. The browser regression page `/tests/tour-copy.test.html` passed, including simulated later edits and deletions in detached copies of the actual page.
+- The final caption uses the page’s current enquiry heading and action. It contains no restored sharing/rate note. In an embedded tour, “Talk to us” closes the tour and returns to the page’s enquiry section; standalone links go to that section directly.
+- Verified the real embedded/full-screen closing action: the tour closes, removes its iframe and focuses the enquiry heading at `#contact`. No errors or warnings appeared in the inspected console. The standalone tour also fetched the current owner headline and description.
+- Interior caption text has a quiet paper backing so the owner’s words stay readable over darker model surfaces.
+- The owner’s main HTML copy was not rewritten during this correction.

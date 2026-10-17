@@ -313,7 +313,7 @@ function fitFov(v) {
 }
 
 // --- captions + chapter rail
-const caps = [...document.querySelectorAll('.cap')].map(el => {
+const caps = [...document.querySelectorAll('.cap:not([hidden])')].map(el => {
   const [a, b] = el.dataset.at.split(',').map(Number);
   return { el, a, b, label: el.dataset.label };
 });

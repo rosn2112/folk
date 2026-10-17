@@ -64,6 +64,22 @@ tourDialog.addEventListener('close', () => {
 });
 window.addEventListener('message', event => {
   if (event.origin !== location.origin || event.source !== tourFrame?.contentWindow) return;
+  if (event.data?.type === 'residency:navigate' && event.data.hash === '#contact') {
+    const revealContact = () => {
+      closeInline();
+      location.hash = '#contact';
+      const section = document.getElementById('contact');
+      section.scrollIntoView({ block: 'start', behavior: 'auto' });
+      const heading = section.querySelector('h2');
+      heading.tabIndex = -1;
+      heading.focus({ preventScroll: true });
+    };
+    if (tourDialog.open) {
+      tourDialog.addEventListener('close', revealContact, { once: true });
+      tourDialog.close();
+    } else revealContact();
+    return;
+  }
   if (event.data?.type !== 'residency:exit') return;
   if (tourDialog.open) tourDialog.close();
   else closeInline();
@@ -100,7 +116,8 @@ function updateVisit() {
   const message = visitMessage(interest, data.get('when') || '', data.has('trial'), data.get('question'));
   document.getElementById('interest-context').textContent = contexts[interest];
   document.getElementById('interest-resource').hidden = interest !== 'ancient-ai';
-  document.getElementById('visit-message').textContent = message;
+  const preview = document.getElementById('visit-message');
+  if (preview) preview.textContent = message;
   document.getElementById('visit-whatsapp').href = whatsappURL(message);
 }
 form.addEventListener('change', updateVisit);

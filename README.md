@@ -19,15 +19,15 @@ Open http://127.0.0.1:4181. The standalone tour is at `/tour/`.
 - Tour links open a full-screen dialog; the section also supports starting inline and expanding. Models load only after a visitor chooses to enter. Closing the tour releases its iframe and restores focus.
 - `Element.moveBefore`, where supported, retains iframe state during expansion/collapse. Other browsers may restart the iframe when it moves; the outer page position remains.
 - The page lists the confirmed appliances and amenities, real room photos and transport routes. There is no stock-photo comparison or generic daily-routine section.
-- Rates are discussed privately. The site mentions 2- and 3-sharing availability and differing rates. No universal room price is displayed, including inside the copied tour.
+- Rates are discussed through the enquiry flow. No universal room price or separate room/rate pitch is displayed inside the tour.
 - The calculator is visible by default. Visitors edit current rent, food, help, bills, commuting and appliance rental costs. A positive room quote plus additional costs enables monthly/yearly savings, extra-cost or equal-cost results. No quote means no invented savings. Deposits and one-off purchases are excluded.
-- Four enquiry choices: living at the residency, attending programmes, retreats, and learning about Ancient AI. Visit timing and the optional seven-day trial appear only for accommodation enquiries. Visitors can add a question and inspect the prepared WhatsApp message before opening it. Nothing is submitted to a server.
+- Four enquiry choices: living at the residency, attending programmes, retreats, and learning about Ancient AI. Visit timing and the optional seven-day trial appear only for accommodation enquiries. Visitors can add a question before continuing to WhatsApp. Nothing is submitted to a server.
 
 ## Source and checks
 
 - `index.html`, `style.css`, `main.js`: page, design and interactions.
 - `site-logic.mjs`: calculator and enquiry-message logic.
-- `tour/`: copied tour models, renderer, lighting, camera path and integration. Pricing and station captions reflect the current page; original parent files are untouched.
+- `tour/`: copied tour models, renderer, lighting and camera path; original parent files are untouched. `tour/copy.js` reads the owner’s current homepage copy for the scene captions and actions. Embedded tours read the parent document; standalone tours fetch the homepage without using an old cached copy. Deleted source text stays hidden. Refresh the website after saving copy edits; the embedded tour then reads that refreshed page. The standalone tour fetches the latest homepage when opened.
 - `assets/`: supplied real photographs and a still captured from the actual 3D model.
 - Existing `Main.*.html`, `support.js`, `motion.*`, `glass-carousel.js` and `vendor/` are retained upstream references, not runtime dependencies of this page. The original index remains in Git.
 
@@ -37,6 +37,8 @@ node --check main.js
 node --check tour/integration.js
 node --check tour/main.js
 ```
+
+The browser regression check at `/tests/tour-copy.test.html` verifies that current headings/descriptions appear in the tour, later edits are used, and deletions never fall back to the old promotional copy.
 
 See `docs/validation.md` for browser checks, evidence and limitations.
 
@@ -53,3 +55,18 @@ The 3D tour is an illustration, not a measured plan. Its city placement was orig
 ## Credits
 
 Property photographs are retained from the source repository. Furniture and textures: Poly Haven, CC0. Tour map: © OpenStreetMap contributors, ODbL. Three.js licensing is in `tour/vendor/THREE-LICENSE.txt`. The upstream stock assets remain as unused references and are not loaded or compared on the page.
+
+
+## Production deployment
+
+Vercel project: `ancient-residency` in `rosn2112s-projects`.
+
+`node scripts/build.mjs` produces `dist/`, containing the current page, assets and 3D tour. Backup mockups, documentation and test pages are excluded from the production output. Vercel uses this command and output directory via `vercel.json`.
+
+From the linked checkout, deploy with:
+
+```sh
+vercel deploy --prod --scope rosn2112s-projects
+```
+
+Add the desired subdomain in this Vercel project's Domains settings. The original `residency-tour` project is separate.

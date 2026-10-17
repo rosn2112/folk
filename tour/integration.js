@@ -1,3 +1,5 @@
+import { applyPageCopy } from './copy.js';
+
 const embedded = window.parent !== window;
 const exit = () => {
   if (embedded) window.parent.postMessage({ type: 'residency:exit' }, location.origin);
@@ -30,4 +32,22 @@ function unavailable() {
   back.focus();
 }
 addEventListener('residency:load-error', unavailable);
-import('./main.js').catch(unavailable);
+document.querySelectorAll('[data-page-link]').forEach(link => link.addEventListener('click', event => {
+  if (!embedded) return;
+  event.preventDefault();
+  window.parent.postMessage({ type: 'residency:navigate', hash: '#contact' }, location.origin);
+}));
+async function start() {
+  let page;
+  try { if (embedded && window.parent.location.origin === location.origin) page = window.parent.document; } catch { /* A standalone tour can also be embedded elsewhere. */ }
+  if (!page?.querySelector('#main')) {
+    try {
+      const response = await fetch('../index.html', { cache: 'no-store' });
+      if (!response.ok) throw new Error('Home page copy unavailable');
+      page = new DOMParser().parseFromString(await response.text(), 'text/html');
+    } catch (error) { console.warn(error); }
+  }
+  if (page) applyPageCopy(page, document);
+  await import('./main.js');
+}
+start().catch(unavailable);
