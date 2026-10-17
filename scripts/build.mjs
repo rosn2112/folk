@@ -5,7 +5,7 @@ import { join } from 'node:path';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = join(root, 'dist');
-const files = ['index.html', 'style.css', 'main.js', 'site-logic.mjs', 'assets', 'tour'];
+const files = ['index.html', 'style.css', 'main.js', 'site-logic.mjs', 'assets', 'tour', 'og.png', 'favicon.svg', 'favicon.ico', 'apple-touch-icon.png'];
 for (const file of files) assert(existsSync(join(root, file)), `Missing site file: ${file}`);
 rmSync(output, { recursive: true, force: true });
 mkdirSync(output);
