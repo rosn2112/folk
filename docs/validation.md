@@ -6,7 +6,7 @@ Local branch: `codex/residency-tour-redesign`, based on upstream `67fdc48`. This
 
 - Node assertions pass for quote-free totals, positive savings, greater costs, equal amounts, monthly/yearly arithmetic and additional costs. Blank, negative, sub-rupee, invalid or excessive quotes do not produce savings. Invalid current expenses do not poison totals.
 - All four enquiry types generate the appropriate WhatsApp message. Visit date and trial interest only enter accommodation messages. Optional notes are bounded to 800 characters and encoded, including markup and URL punctuation.
-- JavaScript syntax checks and `git diff --check` pass.
+- JavaScript syntax and application-file whitespace checks pass. Copied Three.js vendor files retain their original upstream whitespace.
 - Static validation finds unique IDs, valid internal anchors and existing local resources. No static iframe, public ₹28,000 price or stock-photo comparison remains. The tour comes immediately after the hero.
 
 ## Browser checks
