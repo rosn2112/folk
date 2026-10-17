@@ -63,10 +63,12 @@ Vercel project: `ancient-residency` in `rosn2112s-projects`.
 
 `node scripts/build.mjs` produces `dist/`, containing the current page, assets and 3D tour. Backup mockups, documentation and test pages are excluded from the production output. Vercel uses this command and output directory via `vercel.json`.
 
-From the linked checkout, deploy with:
+GitHub repository `rosn2112/folk` is connected to this Vercel project. The production branch is `codex/residency-tour-redesign`, which is also the current local working branch. Push commits to that branch to automatically update the production website and its attached domains:
 
 ```sh
-vercel deploy --prod --scope rosn2112s-projects
+git push origin codex/residency-tour-redesign
 ```
+
+Other branches receive preview deployments. A manual production deployment remains available with `vercel deploy --prod --scope rosn2112s-projects`.
 
 Add the desired subdomain in this Vercel project's Domains settings. The original `residency-tour` project is separate.
